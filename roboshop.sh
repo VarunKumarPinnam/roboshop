@@ -32,7 +32,7 @@ fi
 echo "IP Address : $IP"
 
 aws route53 change-resource-record-sets \
- --hosted-zone-id HOSTED_ZONE_ID \
+ --hosted-zone-id $ZONE_ID \
  --change-batch  '{
   "Comment": "Update A record for $DOMAIN_NAME",
   "Changes": [
