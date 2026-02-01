@@ -40,7 +40,7 @@ validation $? "rabbitmrabbitMQ service enable"
 systemctl start rabbitmq-server 
 validation $? "rabbitmrabbitMQ service start"
 
-rabbitmqctl add_user roboshop roboshop123
+rabbitmqctl add_user roboshop roboshop123 &>>$LOGS_FILE
 validation $? "roboshop user creation"
 
 rabbitmqctl set_permissions -p / roboshop ".*" ".*" ".*"
