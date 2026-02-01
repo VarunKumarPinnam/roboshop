@@ -40,7 +40,8 @@ validation $? "nodejs installation is"
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-else  "$Y User already exists, skipping this step $N"
+else 
+    echo  "$Y User already exists, skipping this step $N"
 fi
 
 mkdir -p /app
