@@ -2,7 +2,6 @@ USERID=$(id -u)
 LOGS_DIRECTORY="/var/log/shell-mongodb"
 LOGS_FILE="$LOGS_DIRECTORY/$0.log"
 SHELL_DIR=$PWD
-MONGODB_HOST="mongodb.advidevops.online"
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
@@ -49,7 +48,7 @@ fi
 mkdir -p /app
 validation $? "creating an app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILE
+curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip  &>>$LOGS_FILE
 validation $? "Download catalogue code"
 
 cd /app 
@@ -58,41 +57,21 @@ validation $? "Moving to app directory"
 rm -rf /app/*
 validation $? "removing the existing code"
 
-unzip /tmp/catalogue.zip &>>$LOGS_FILE
+unzip /tmp/user.zip &>>$LOGS_FILE
 validation $? "unzipping the files"
 
 cd /app
 npm install &>>$LOGS_FILE
 validation $? "installing dependencies" 
 
-cp $SHELL_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
-validation $? "catalogue service has been updated"
+cp $SHELL_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILE
+validation $? "user service has been updated"
 
 systemctl daemon-reload 
 validation $? "system daemon reloaded"
 
-systemctl enable catalogue &>>$LOGS_FILE
-validation $? "catalogue service enable is"
+systemctl enable user &>>$LOGS_FILE
+validation $? "user service is enabled"
 
-systemctl start catalogue
-validation $? "catalogue service start is"
-
-cp $SHELL_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
-
-dnf install mongodb-mongosh -y &>>$LOGS_FILE
-validation $? "installing mongodb"
-
-INDEX=$(mongosh --host $MONGODB_HOST  --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
-
-if [ "$INDEX" -le 0 ]; then 
-   mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOGS_FILE
-   validation $? "loading products"
-else
-    echo -e "$Y data already loaded skipping this step $N"
-fi 
-
-systemctl restart catalogue
-validation $? "system restart"
-
-
-
+systemctl start user
+validation $? "user service is started"
