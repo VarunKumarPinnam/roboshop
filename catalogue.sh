@@ -1,5 +1,5 @@
 USERID=$(id -u)
-LOGS_DIRECTORY="/var/log/shell-mongodb"
+LOGS_DIRECTORY="/var/log/shell-script"
 LOGS_FILE="$LOGS_DIRECTORY/$0.log"
 SHELL_DIR=$PWD
 MONGODB_HOST="mongodb.advidevops.online"

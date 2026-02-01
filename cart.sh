@@ -64,14 +64,14 @@ cd /app
 npm install &>>$LOGS_FILE
 validation $? "installing dependencies" 
 
-cp $SHELL_DIR/user.service /etc/systemd/system/user.service &>>$LOGS_FILE
-validation $? "user service has been updated"
+cp $SHELL_DIR/cart.service /etc/systemd/system/cart.service &>>$LOGS_FILE
+validation $? "cart service has been updated"
 
 systemctl daemon-reload 
 validation $? "system daemon reloaded"
 
-systemctl enable user &>>$LOGS_FILE
-validation $? "user service is enabled"
+systemctl enable cart &>>$LOGS_FILE
+validation $? "cart service is enabled"
 
-systemctl start user
-validation $? "user service is started"
+systemctl start cart
+validation $? "cart service is started"
