@@ -34,7 +34,7 @@ echo "IP Address : $IP"
 aws route53 change-resource-record-sets \
  --hosted-zone-id $ZONE_ID \
  --change-batch  '{
-  "Comment": "Update A record for $DOMAIN_NAME",
+  "Comment": "Update A record to $RECORD_NAME",
   "Changes": [
     {
       "Action": "UPSERT",
