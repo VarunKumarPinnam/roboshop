@@ -20,10 +20,10 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "$R $2 $N" | tee -a $LOGS_FILE
+    echo -e "$R $2 failed $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 $N" | tee -a $LOGS_FILE
+    echo -e "$G $2 completed $N" | tee -a $LOGS_FILE
  fi
 }
 
@@ -35,7 +35,7 @@ validation $? "maven installed"
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    echo -e "User roboshop has been created"
+    echo -e "$Y User roboshop has been created $N"
 else 
     echo -e  "$Y User already exists, skipping this step $N"
 fi
@@ -62,7 +62,7 @@ validation $? "installing dependencies"
 mv target/shipping-1.0.jar shipping.jar 
 
 cp $SHELL_DIR/shipping.service /etc/systemd/system/shipping.service &>>$LOGS_FILE
-validation $? "shipping service has been updated"
+validation $? "shipping service update"
 
 systemctl daemon-reload 
 validation $? "system daemon reloaded"
