@@ -20,27 +20,27 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "$R $2 Failure $N" | tee -a $LOGS_FILE
+    echo -e "$R $2 $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 Success $N" | tee -a $LOGS_FILE
+    echo -e "$G $2 $N" | tee -a $LOGS_FILE
  fi
 }
 
-
+echo "$Y starting...$N"
 dnf module disable nodejs -y &>>$LOGS_FILE
-validation $? "nodejs module disabling is"
+validation $? "nodejs module disabled"
 
 dnf module enable nodejs:20 -y &>>$LOGS_FILE
-validation $? "nodejs module enabling is"
+validation $? "nodejs module enabled"
 
 dnf install nodejs -y &>>$LOGS_FILE
-validation $? "nodejs installation is"
+validation $? "nodejs installed"
 
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    echo "User roboshop has been created"
+    echo " $G User roboshop has been created $N"
 else 
     echo -e  "$Y User already exists, skipping this step $N"
 fi
