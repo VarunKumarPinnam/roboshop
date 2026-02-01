@@ -57,7 +57,7 @@ validation $? "Moving to app directory"
 rm -rf /app/*
 validation $? "removing the existing code"
 
-unzip /tmp/user.zip &>>$LOGS_FILE
+unzip /tmp/cart.zip &>>$LOGS_FILE
 validation $? "unzipping the files"
 
 cd /app
