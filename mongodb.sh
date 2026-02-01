@@ -38,7 +38,7 @@ validation $? "enable mongo db"
 systemctl start mongod &>> $LOGS_FILE
 validation $? "start mongo db"
 
-sed -i '/s/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
+sed -i 's/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
 validation $? "allowing remote connections"
 
 systemctl restart mongod &>> $LOGS_FILE
