@@ -27,7 +27,7 @@ validation()
  fi
 }
 
-echo "$Y starting...$N"
+echo -e "$Y starting...$N"
 dnf module disable nodejs -y &>>$LOGS_FILE
 validation $? "nodejs module disabled"
 
@@ -40,7 +40,7 @@ validation $? "nodejs installed"
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    echo " $G User roboshop has been created $N"
+    echo -e " $G User roboshop has been created $N"
 else 
     echo -e  "$Y User already exists, skipping this step $N"
 fi

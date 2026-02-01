@@ -28,7 +28,7 @@ validation()
  fi
 }
 
-
+echo -e "$Y starting...$N"
 dnf module disable redis -y &>>$LOGS_FILE
 validation $? "redis module disabled"
 

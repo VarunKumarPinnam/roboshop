@@ -25,10 +25,11 @@ validation()
     echo -e "$R $2 $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 Success $N" | tee -a $LOGS_FILE
+    echo -e "$G $2  $N" | tee -a $LOGS_FILE
  fi
 }
 
+echo -e "$Y starting...$N"
 dnf module disable nginx -y &>>$LOGS_FILE
 validation $? "nginx module disabled"
 

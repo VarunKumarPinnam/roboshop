@@ -1,5 +1,5 @@
 USERID=$(id -u)
-LOGS_DIRECTORY="/var/log/shell-script"
+LOGS_DIRECTORY="/var/log/shell-"
 LOGS_FILE="$LOGS_DIRECTORY/$0.log"
 SHELL_DIR=$PWD
 MONGODB_HOST="mongodb.advidevops.online"
@@ -21,13 +21,14 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "$R $2 Failure $N" | tee -a $LOGS_FILE
+    echo -e "$R $2  $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 Success $N" | tee -a $LOGS_FILE
+    echo -e "$G $2  $N" | tee -a $LOGS_FILE
  fi
 }
 
+echo -e "$Y starting...$N"
 
 dnf module disable nodejs -y &>>$LOGS_FILE
 validation $? "nodejs module disabling is"
@@ -41,7 +42,7 @@ validation $? "nodejs installation is"
 id roboshop &>>$LOGS_FILE
 if [ $? -ne 0 ]; then 
     useradd --system --home /app --shell /sbin/nologin --comment "roboshop system user" roboshop
-    echo "User roboshop has been created"
+    echo -e "User roboshop has been created"
 else 
     echo -e  "$Y User already exists, skipping this step $N"
 fi
