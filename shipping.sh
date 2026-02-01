@@ -1,6 +1,7 @@
 USERID=$(id -u)
 LOGS_DIRECTORY="/var/log/shell-script"
 LOGS_FILE="$LOGS_DIRECTORY/$0.log"
+SHELL_DIR=$PWD
 MYSQL="mysql.advidevops.online"
 R="\e[31m"
 G="\e[32m"
