@@ -1,6 +1,7 @@
 USERID=$(id -u)
 LOGS_DIRECTORY="/var/log/shell-script"
 LOGS_FILE="$LOGS_DIRECTORY/$0.log"
+SHELL_DIR=$PWD
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
@@ -27,13 +28,16 @@ validation()
 }
 
 echo -e "$Y starting...$N"
-dnf install rabbitmq-server -y
+
+cp $SHELL_DIR/rabbitmq.repo /etc/yum.repos.d/rabbitmq.repo
+
+dnf install rabbitmq-server -y &>>$LOGS_FILE
 validation $? "rabbitmrabbitMQ installation"
 
-systemctl enable rabbitmq-server
+systemctl enable rabbitmq-server &>>$LOGS_FILE
 validation $? "rabbitmrabbitMQ service enable"
 
-systemctl start rabbitmq-server
+systemctl start rabbitmq-server 
 validation $? "rabbitmrabbitMQ service start"
 
 rabbitmqctl add_user roboshop roboshop123
