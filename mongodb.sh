@@ -32,14 +32,14 @@ validation $? "copying mongo repo"
 dnf install mongodb-org -y 
 validation $? "mongo db server installation"
 
-systemctl enable mongod
+systemctl enable mongod &>>$LOGS_FILE
 validation $? "enable mongo db"
 
-systemctl start mongod 
+systemctl start mongod &>> $LOGS_FILE
 validation $? "start mongo db"
 
 sed -i '/s/127.0.0.1/0.0.0.0/g' /etc/mongod.conf
-validation $? "allwoing remote connections"
+validation $? "allowing remote connections"
 
-systemctl restart mongod
+systemctl restart mongod &>> $LOGS_FILE
 validation $? "restart mongodb"
