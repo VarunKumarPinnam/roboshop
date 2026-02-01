@@ -27,7 +27,7 @@ validation()
 }
 
 cp mongo.repo /etc/yum.repos.d/mongo.repo
-validation $? "cpoying mongo repo"
+validation $? "copying mongo repo"
 
 dnf install mongodb-org -y 
 validation $? "mongo db server installation"
