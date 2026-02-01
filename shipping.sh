@@ -79,13 +79,13 @@ validation $? "shipping service start is"
 dnf install mysql -y &>>$LOGS_FILE
 validation $? "mysql client is installed"
 
-mysql -h $mysql -uroot -pRoboShop@1 < /app/db/schema.sql
+mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/schema.sql
 validation $? "loaded schema to db"
 
-mysql -h $mysql -uroot -pRoboShop@1 < /app/db/app-user.sql
+mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/app-user.sql
 validation $? "created new user in mysql database"
 
-mysql -h $mysql -uroot -pRoboShop@1 < /app/db/master-data.sql
+mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/master-data.sql
 validation $? "master data loaded to db"
 
 systemctl restart shipping
