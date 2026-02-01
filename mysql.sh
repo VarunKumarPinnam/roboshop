@@ -26,6 +26,7 @@ validation()
  fi
 }
 
+echo -e "$Y starting...$N"
 dnf install mysql-server -y &>>$LOGS_FILE
 validation $? "mysql installed"
 
