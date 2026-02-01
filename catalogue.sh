@@ -28,13 +28,13 @@ validation()
  fi
 }
 
-dnf module disable nodejs -y 
+dnf module disable nodejs -y &>>$LOGS_FILE
 validation $? "nodejs module disabling is"
 
-dnf module enable nodejs:20 -y
+dnf module enable nodejs:20 -y &>>$LOGS_FILE
 validation $? "nodejs module enabling is"
 
-dnf install nodejs -y
+dnf install nodejs -y &>>$LOGS_FILE
 validation $? "nodejs installation is"
 
 id roboshop 
@@ -47,26 +47,26 @@ fi
 mkdir -p /app
 validation $? "creating an app directory"
 
-curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
+curl -o /tmp/catalogue.zip https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip &>>$LOGS_FILE
 validation $? "Download catalogue code"
 
 cd /app 
-VALIDATE $? "Moving to app directory"
+validation $? "Moving to app directory"
 
 rm -rf /app/*
 validation $? "removing the existing code"
 
-unzip /tmp/catalogue.zip
+unzip /tmp/catalogue.zip &>>$LOGS_FILE
 validation $? "unzipping the files"
 
 cd /app
-npm install
+npm install &>>$LOGS_FILE
 validation $? "installing dependencies" 
 
-cp $SHELL_DIR/catalogue.service /etc/systemd/system/catalogue.service
+cp $SHELL_DIR/catalogue.service /etc/systemd/system/catalogue.service &>>$LOGS_FILE
 validation $? "catalogue service has been updated"
 
-systemctl daemon-reload
+systemctl daemon-reload 
 validation $? "system daemon reloaded"
 
 systemctl enable catalogue 
@@ -77,13 +77,13 @@ validation $? "catalogue service start is"
 
 cp $SHELL_DIR/mongo.repo /etc/yum.repos.d/mongo.repo
 
-dnf install mongodb-mongosh -y
+dnf install mongodb-mongosh -y &>>$LOGS_FILE
 validation $? "installing mongodb"
 
 INDEX=$(mongosh --host $MONGODB_HOST  --quiet  --eval 'db.getMongo().getDBNames().indexOf("catalogue")')
 
 if [ $INDEX -le 0 ]; then 
-   mongosh --host $MONGODB_HOST </app/db/master-data.js
+   mongosh --host $MONGODB_HOST </app/db/master-data.js &>>$LOGS_FILE
    validation $? "loading products"
 else
     echo "data already loaded skipping this step"
