@@ -48,8 +48,8 @@ fi
 mkdir -p /app
 validation $? "creating an app directory"
 
-curl -L -o /tmp/user.zip https://roboshop-artifacts.s3.amazonaws.com/user-v3.zip  &>>$LOGS_FILE
-validation $? "Download catalogue code"
+curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip  >>$LOGS_FILE
+validation $? "Download cart code"
 
 cd /app 
 validation $? "Moving to app directory"
