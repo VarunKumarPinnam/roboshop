@@ -38,7 +38,7 @@ validation $? "nginx module enabled"
 dnf install nginx -y &>>$LOGS_FILE
 validation $? "nginx installated"
 
-systemctl enable nginx 
+systemctl enable nginx &>>$LOGS_FILE
 validation $? "$G enabled nginx service $N"
 
 systemctl start nginx
