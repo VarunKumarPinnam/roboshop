@@ -90,6 +90,7 @@ else
 fi 
 
 systemctl restart catalogue
+validation $? "system restart"
 
 
 
