@@ -97,6 +97,7 @@ echo "Waiting for SSH..."
     set -e
 
 sudo mkdir -p $ROBOLOG_DIRECTORY
+sudo chmod 777 $ROBOLOG_DIRECTORY
 
 ## Install git if not present
     if ! command -v git &>/dev/null; then
