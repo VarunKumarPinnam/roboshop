@@ -4,6 +4,8 @@ SG_ID="sg-02a915d53f8e3507f"
 AMI_ID="ami-0532be01f26a3de55"
 ZONE_ID="Z0148099BE47QLVOZU0Q"
 DOMAIN_NAME="advidevops.online"
+ROBOLOG_DIRECTORY="/var/log/roboshop"
+ROBOLOG_FILE="$ROBOLOG_DIRECTORY/$0.log"
 
 KEY_FILE="$HOME/.ssh/project-key.pem"
 SSH_USER="ec2-user"
@@ -92,11 +94,13 @@ echo "Waiting for SSH..."
 
   ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
 
-      set -e
+    set -e
+
+mkdir -p $ROBOLOG_DIRECTORY
 
 Install git if not present
     if ! command -v git &>/dev/null; then
-      sudo dnf install git -y
+      sudo dnf install git -y &>>$ROBOLOG_FILE
     fi
     if [ ! -d "$(basename $REPO_URL .git)" ]; then
       git clone "$REPO_URL"
