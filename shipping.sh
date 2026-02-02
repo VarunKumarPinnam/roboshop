@@ -21,10 +21,10 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "${R} $2 failed ${N}" | tee -a $LOGS_FILE
+    echo -e "$R $2..FAILED $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "${G} $2 completed ${N}" | tee -a $LOGS_FILE
+    echo -e "$G $2..SUCCESS $N" | tee -a $LOGS_FILE
  fi
 }
 
@@ -79,14 +79,15 @@ validation $? "shipping service start is"
 dnf install mysql -y &>>$LOGS_FILE
 validation $? "mysql client is installed"
 
-mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/schema.sql
-validation $? "loaded schema to db"
+mysql -h $MYSQL -uroot -pRoboShop@1 -e "use cities"
 
-mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/app-user.sql
-validation $? "created new user in mysql database"
-
-mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/master-data.sql
-validation $? "master data loaded to db"
+if [ $? -ne 0 ];then
+    mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/schema.sql
+    mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/app-user.sql
+    mysql -h $MYSQL -uroot -pRoboShop@1 < /app/db/master-data.sql
+    validation $? "Data loaded to Mysql"
+else
+    echo -e "$Y data is already loaded ..skipping this step $N"
 
 systemctl restart shipping
 validation $? "shiping service restarted"

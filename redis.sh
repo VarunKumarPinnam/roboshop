@@ -21,10 +21,10 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "$R $2 $N" | tee -a $LOGS_FILE
+    echo -e "$R $2..FAILED $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 $N" | tee -a $LOGS_FILE
+    echo -e "$G $2..SUCCESS $N" | tee -a $LOGS_FILE
  fi
 }
 
@@ -41,7 +41,8 @@ validation $? "redis installated"
 sed -i 's/127.0.0.1/0.0.0.0/g' /etc/redis/redis.conf
 validation $? "$Y updated binding ip to 0.0.0.0 $N"
 
-sed -i 's/protected-mode yes/protected-mode no/g' /etc/redis/redis.conf
+# sed -i 's/protected-mode yes/protected-mode no/g' /etc/redis/redis.conf
+sed -i -e 's/127.0.0.1/0.0.0.0/g' -e '/protected-mode/ c protected-mode no' /etc/redis/redis.conf
 validation $? "$Y updated protected mode to no $N"
 
 systemctl enable redis &>>$LOGS_FILE

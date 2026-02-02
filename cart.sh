@@ -20,10 +20,10 @@ mkdir -p $LOGS_DIRECTORY
 validation()
 {
   if [ $1 -ne 0 ]; then 
-    echo -e "$R $2 $N" | tee -a $LOGS_FILE
+    echo -e "$R $2..FAILED $N" | tee -a $LOGS_FILE
     exit 1
   else
-    echo -e "$G $2 $N" | tee -a $LOGS_FILE
+    echo -e "$G $2..SUCCESS $N" | tee -a $LOGS_FILE
  fi
 }
 
@@ -48,7 +48,7 @@ fi
 mkdir -p /app
 validation $? "creating an app directory"
 
-curl -L -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip  >>$LOGS_FILE
+curl -o /tmp/cart.zip https://roboshop-artifacts.s3.amazonaws.com/cart-v3.zip  >>$LOGS_FILE
 validation $? "Download cart code"
 
 cd /app 
