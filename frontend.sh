@@ -58,7 +58,7 @@ validation $? "$Y frontend code unzipped to html folder $N"
 sed -i d /etc/nginx/nginx.conf 
 validation $? "$Y removed default nginx config data $N"
 
-cp $SHELL_DIR/nginx.service /etc/nginx/nginx.conf
+cp $SHELL_DIR/nginx.conf /etc/nginx/nginx.conf
 validation $? "$Y updated new configuration to nginx.conf file $N"
 
 systemctl restart nginx 
