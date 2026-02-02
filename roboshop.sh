@@ -101,6 +101,7 @@ sudo chmod 777 $ROBOLOG_DIRECTORY
 
 ## Install git if not present
     if ! command -v git &>/dev/null; then
+        echo "installing git"
       sudo dnf install git -y &>>$ROBOLOG_FILE
     fi
     if [ ! -d "$(basename $REPO_URL .git)" ]; then
