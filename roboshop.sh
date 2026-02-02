@@ -90,12 +90,15 @@ echo "Waiting for SSH..."
   done
 
 
+ssh -o StrictHostKeyChecking=no \
+    -i "$KEY_FILE" \
+    "$SSH_USER@$PUBLIC_IP" \
+    REPO_URL="$REPO_URL" \
+    INSTANCE_NAME="$instance" \
+    FALLBACK_SCRIPT="$FALLBACK_SCRIPT" \
+<<'EOF'
 
-  ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<'EOF'
-      set -e
-
-
-##...Install git if not present
+set -e
 
 LOG_DIR="/var/log/roboshop"
 GIT_LOG="$LOG_DIR/git-install.log"
@@ -103,32 +106,34 @@ GIT_LOG="$LOG_DIR/git-install.log"
 sudo mkdir -p "$LOG_DIR"
 sudo chown ec2-user:ec2-user "$LOG_DIR"
 
-    if ! command -v git &>/dev/null; then
-      ##  sudo dnf install git -y &>>$GIT_LOG
-      sudo sh -c "dnf install git -y >> '$GIT_LOG' 2>&1"
-    fi
-    
-    if [ ! -d "$(basename $REPO_URL .git)" ]; then
-      git clone "$REPO_URL"
-    fi
+# Install git if not present (silent)
+if ! command -v git &>/dev/null; then
+  sudo sh -c "dnf install git -y >> '$GIT_LOG' 2>&1"
+fi
 
-    cd "$(basename $REPO_URL .git)"
+REPO_DIR=$(basename "$REPO_URL" .git)
 
-    SCRIPT_NAME="${instance}.sh"
+if [ ! -d "$REPO_DIR" ]; then
+  git clone "$REPO_URL"
+fi
 
-    if [ -f "\$SCRIPT_NAME" ]; then
-      echo "Running \$SCRIPT_NAME"
-      chmod +x "\$SCRIPT_NAME"
-      sudo "./\$SCRIPT_NAME"
-    elif [ -f "$FALLBACK_SCRIPT" ]; then
-      echo "WARNING: \$SCRIPT_NAME not found. Running fallback"
-      chmod +x "$FALLBACK_SCRIPT"
-      sudo "./$FALLBACK_SCRIPT"
-    else
-      echo "ERROR: No script found to execute"
-      exit 1
-    fi
+cd "$REPO_DIR"
+
+SCRIPT_NAME="${INSTANCE_NAME}.sh"
+
+if [ -f "$SCRIPT_NAME" ]; then
+  chmod +x "$SCRIPT_NAME"
+  sudo "./$SCRIPT_NAME"
+elif [ -f "$FALLBACK_SCRIPT" ]; then
+  chmod +x "$FALLBACK_SCRIPT"
+  sudo "./$FALLBACK_SCRIPT"
+else
+  echo "ERROR: No script found for $INSTANCE_NAME"
+  exit 1
+fi
+
 EOF
+
 
 
   echo "Completed setup for $instance"
