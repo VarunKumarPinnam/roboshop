@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SG_ID="sg-02a915d53f8e3507f"
-AMI_ID="ami-0220d79f3f480ecf5"
+AMI_ID="ami-0532be01f26a3de55"
 ZONE_ID="Z0148099BE47QLVOZU0Q"
 DOMAIN_NAME="advidevops.online"
 
