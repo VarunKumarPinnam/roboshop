@@ -91,7 +91,7 @@ echo "Waiting for SSH..."
 
 
 
-  ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
+  ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<'EOF'
       set -e
 
 
@@ -104,7 +104,8 @@ sudo mkdir -p "$LOG_DIR"
 sudo chown ec2-user:ec2-user "$LOG_DIR"
 
     if ! command -v git &>/dev/null; then
-        sudo dnf install git -y &>>$GIT_LOG
+      ##  sudo dnf install git -y &>>$GIT_LOG
+      sudo sh -c "dnf install git -y >> '$GIT_LOG' 2>&1"
     fi
     
     if [ ! -d "$(basename $REPO_URL .git)" ]; then
