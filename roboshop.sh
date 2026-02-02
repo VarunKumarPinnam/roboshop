@@ -89,40 +89,46 @@ echo "Waiting for SSH..."
     sleep 10
   done
 
-ssh -tt \
+ssh -T \
   -i "$KEY_FILE" \
   -o IdentitiesOnly=yes \
   -o StrictHostKeyChecking=no \
-  "$SSH_USER@$PUBLIC_IP" <<'EOF'
+  "$SSH_USER@$PUBLIC_IP" <<EOF
 
 set -e
 
-# Install git if not present
+REPO_URL="$REPO_URL"
+INSTANCE_NAME="$instance"
+
+REPO_DIR=\$(basename "\$REPO_URL" .git)
+SCRIPT_NAME="\$INSTANCE_NAME.sh"
+
+# Install git if needed
 if ! command -v git &>/dev/null; then
   sudo dnf install git -y
 fi
 
-if [ ! -d "roboshop" ]; then
-  git clone https://github.com/VarunKumarPinnam/roboshop.git
+# Clone repo if missing
+if [ ! -d "\$REPO_DIR" ]; then
+  git clone "\$REPO_URL"
 fi
 
-cd roboshop
+cd "\$REPO_DIR"
 
-SCRIPT_NAME="mongodb.sh"
-
-if [ -f "$SCRIPT_NAME" ]; then
-  chmod +x "$SCRIPT_NAME"
-  sudo "./$SCRIPT_NAME"
+# Execute correct script
+if [ -f "\$SCRIPT_NAME" ]; then
+  chmod +x "\$SCRIPT_NAME"
+  sudo "./\$SCRIPT_NAME"
 elif [ -f "fallback.sh" ]; then
   chmod +x "fallback.sh"
-  sudo "./fallback.sh"
+  sudo ./fallback.sh
 else
-  echo "ERROR: No script found"
+  echo "ERROR: No script found for \$INSTANCE_NAME"
   exit 1
 fi
 
-exit
 EOF
+
 
 #   ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
 
