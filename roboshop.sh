@@ -97,8 +97,14 @@ echo "Waiting for SSH..."
 
 ##...Install git if not present
 
+LOG_DIR="/var/log/roboshop"
+GIT_LOG="$LOG_DIR/git-install.log"
+
+sudo mkdir -p "$LOG_DIR"
+sudo chown ec2-user:ec2-user "$LOG_DIR"
+
     if ! command -v git &>/dev/null; then
-        sudo dnf install git -y
+        sudo dnf install git -y &>>$GIT_LOG
     fi
     
     if [ ! -d "$(basename $REPO_URL .git)" ]; then
