@@ -93,33 +93,35 @@ ssh -tt \
   -i "$KEY_FILE" \
   -o IdentitiesOnly=yes \
   -o StrictHostKeyChecking=no \
-  "$SSH_USER@$PUBLIC_IP" <<EOF
+  "$SSH_USER@$PUBLIC_IP" <<'EOF'
 
-  set -e
+set -e
 
-  # Install git if not present
-  if ! command -v git &>/dev/null; then
-    sudo dnf install git -y
-  fi
+# Install git if not present
+if ! command -v git &>/dev/null; then
+  sudo dnf install git -y
+fi
 
-  if [ ! -d "$(basename $REPO_URL .git)" ]; then
-    git clone "$REPO_URL"
-  fi
+if [ ! -d "roboshop" ]; then
+  git clone https://github.com/VarunKumarPinnam/roboshop.git
+fi
 
-  cd "$(basename $REPO_URL .git)"
+cd roboshop
 
-  SCRIPT_NAME="${instance}.sh"
+SCRIPT_NAME="mongodb.sh"
 
-  if [ -f "\$SCRIPT_NAME" ]; then
-    chmod +x "\$SCRIPT_NAME"
-    sudo "./\$SCRIPT_NAME"
-  elif [ -f "$FALLBACK_SCRIPT" ]; then
-    chmod +x "$FALLBACK_SCRIPT"
-    sudo "./$FALLBACK_SCRIPT"
-  else
-    echo "ERROR: No script found"
-    exit 1
-  fi
+if [ -f "$SCRIPT_NAME" ]; then
+  chmod +x "$SCRIPT_NAME"
+  sudo "./$SCRIPT_NAME"
+elif [ -f "fallback.sh" ]; then
+  chmod +x "fallback.sh"
+  sudo "./fallback.sh"
+else
+  echo "ERROR: No script found"
+  exit 1
+fi
+
+exit
 EOF
 
 #   ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
