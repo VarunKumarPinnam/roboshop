@@ -89,31 +89,64 @@ echo "Waiting for SSH..."
     sleep 10
   done
 
-  ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
+ssh -tt \
+  -i "$KEY_FILE" \
+  -o IdentitiesOnly=yes \
+  -o StrictHostKeyChecking=no \
+  "$SSH_USER@$PUBLIC_IP" <<EOF
 
-      set -e
+  set -e
 
-    if [ ! -d "$(basename $REPO_URL .git)" ]; then
-      git clone "$REPO_URL"
-    fi
+  # Install git if not present
+  if ! command -v git &>/dev/null; then
+    sudo dnf install git -y
+  fi
 
-    cd "$(basename $REPO_URL .git)"
+  if [ ! -d "$(basename $REPO_URL .git)" ]; then
+    git clone "$REPO_URL"
+  fi
 
-    SCRIPT_NAME="${instance}.sh"
+  cd "$(basename $REPO_URL .git)"
 
-    if [ -f "\$SCRIPT_NAME" ]; then
-      echo "Running \$SCRIPT_NAME"
-      chmod +x "\$SCRIPT_NAME"
-      sudo "./\$SCRIPT_NAME"
-    elif [ -f "$FALLBACK_SCRIPT" ]; then
-      echo "WARNING: \$SCRIPT_NAME not found. Running fallback"
-      chmod +x "$FALLBACK_SCRIPT"
-      sudo "./$FALLBACK_SCRIPT"
-    else
-      echo "ERROR: No script found to execute"
-      exit 1
-    fi
+  SCRIPT_NAME="${instance}.sh"
+
+  if [ -f "\$SCRIPT_NAME" ]; then
+    chmod +x "\$SCRIPT_NAME"
+    sudo "./\$SCRIPT_NAME"
+  elif [ -f "$FALLBACK_SCRIPT" ]; then
+    chmod +x "$FALLBACK_SCRIPT"
+    sudo "./$FALLBACK_SCRIPT"
+  else
+    echo "ERROR: No script found"
+    exit 1
+  fi
 EOF
+
+#   ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
+
+#       set -e
+
+#     if [ ! -d "$(basename $REPO_URL .git)" ]; then
+#       git clone "$REPO_URL"
+#     fi
+
+#     cd "$(basename $REPO_URL .git)"
+
+#     SCRIPT_NAME="${instance}.sh"
+
+#     if [ -f "\$SCRIPT_NAME" ]; then
+#       echo "Running \$SCRIPT_NAME"
+#       chmod +x "\$SCRIPT_NAME"
+#       sudo "./\$SCRIPT_NAME"
+#     elif [ -f "$FALLBACK_SCRIPT" ]; then
+#       echo "WARNING: \$SCRIPT_NAME not found. Running fallback"
+#       chmod +x "$FALLBACK_SCRIPT"
+#       sudo "./$FALLBACK_SCRIPT"
+#     else
+#       echo "ERROR: No script found to execute"
+#       exit 1
+#     fi
+# EOF
 
 
   echo "Completed setup for $instance"
