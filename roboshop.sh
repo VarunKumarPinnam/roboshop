@@ -5,10 +5,12 @@ AMI_ID="ami-0220d79f3f480ecf5"
 ZONE_ID="Z0148099BE47QLVOZU0Q"
 DOMAIN_NAME="advidevops.online"
 
-KEY_FILE="project-key.pem"
+KEY_FILE="$HOME/.ssh/project-key.pem"
 SSH_USER="ec2-user"
 REPO_URL="https://github.com/VarunKumarPinnam/roboshop.git"
 FALLBACK_SCRIPT="fallback.sh"
+
+[ -f "$KEY_FILE" ] || { echo "ERROR: Key not found $KEY_FILE"; exit 1; }
 
 > servers.txt   # capture server details
 
@@ -21,6 +23,7 @@ do
   INSTANCE_ID=$(aws ec2 run-instances \
     --image-id $AMI_ID \
     --instance-type t3.micro \
+    --key-name project-key \
     --security-group-ids $SG_ID \
     --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=$instance}]" \
     --query 'Instances[0].InstanceId' \
@@ -78,6 +81,13 @@ do
 
 #...SSH + git clone + script execution
  echo "Provisioned $instance ($INSTANCE_ID) at $PUBLIC_IP"
+
+echo "Waiting for SSH..."
+  for i in {1..10}; do
+    ssh -o StrictHostKeyChecking=no -o ConnectTimeout=5 \
+        -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" "echo SSH ready" && break
+    sleep 10
+  done
 
   ssh -o StrictHostKeyChecking=no -i "$KEY_FILE" "$SSH_USER@$PUBLIC_IP" <<EOF
 
