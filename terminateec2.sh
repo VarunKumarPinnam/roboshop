@@ -44,8 +44,10 @@ else
   aws route53 change-resource-record-sets \
     --hosted-zone-id "$HZ_ID" \
     --change-batch file://delete-records.json
+      echo "Deleted $COUNT A records"
 fi
 
+sleep 30
 
 #####################################
 # STEP 3: TERMINATE EC2 INSTANCES
